@@ -29,28 +29,30 @@ public function store(GeneralRequest $request)
 {
     $kode_service = autonumber('service', 'kode_service', 3, 'SVC'); // Generate kode unik
 
+    // Simpan data utama
     $service = Service::create([
         'kode_service' => $kode_service,
         'plat_nomor' => $request->plat_nomor,
         'nama_motor' => $request->nama_motor,
         'kode_brand' => $request->kode_brand,
         'deskripsi_masalah' => $request->deskripsi_masalah,
-        'kode_user' => $request->kode_user,
-        'kode_petugas' => $request->kode_petugas,
+        'user_id' => $request->kode_user, // Sesuaikan dengan nama field di database
+        'petugas_id' => $request->kode_petugas,
     ]);
 
-    // **Cek jika spareparts ada, baru attach**
-    if (!empty($request->spareparts)) {
+    // Pastikan ada spareparts sebelum attach
+    if ($request->has('spareparts') && is_array($request->spareparts)) {
         $service->spareparts()->attach($request->spareparts);
     }
 
-    // **Cek jika alat ada, baru attach**
-    if (!empty($request->alat)) {
+    // Pastikan ada alat sebelum attach
+    if ($request->has('alat') && is_array($request->alat)) {
         $service->alat()->attach($request->alat);
     }
 
     return response()->json(['message' => 'Data berhasil ditambahkan!', 'data' => $service]);
 }
+
 
 
 public function edit($id)

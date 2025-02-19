@@ -56,12 +56,17 @@ class KeluarController extends Controller
 
 
 
-    public function edit($id)
-    {
-        $keluar = Keluar::findOrFail($id);
-        $spareparts = Sparepart::all();
-        return view('barang_keluar.update', compact('keluar', 'spareparts'));
+public function edit($kode_keluar)
+{
+    $keluar = Keluar::with('sparepart')->where('kode_keluar', $kode_keluar)->first();
+
+    if (!$keluar) {
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
+
+    return response()->json(['success' => true, 'keluar' => $keluar]);
+}
+
 
     public function update(Request $request, $id)
 {

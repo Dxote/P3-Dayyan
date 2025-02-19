@@ -61,6 +61,7 @@ Route::get('/barang_keluar', [KeluarController::class, 'index'])->name('barang_k
 Route::post('/barang_keluar', [KeluarController::class, 'store'])->name('barang_keluar.store'); 
 Route::get('/barang_keluar/{kode_keluar}/edit', [KeluarController::class, 'edit']); 
 Route::put('/barang_keluar/{kode_keluar}', [KeluarController::class, 'update'])->name('barang_keluar.update');
+Route::delete('/barang_keluar/{kode_keluar}', [KeluarController::class, 'destroy'])->name('barang_keluar.destroy');
 Route::get('/barang_keluar/invoice', [KeluarController::class, 'invoice'])->name('barang_keluar.invoice');
 Route::put('/shift/{kode_shift}', [ShiftController::class, 'update'])->name('shift.update');
 Route::get('/shift/{kode_shift}/edit', [ShiftController::class, 'edit']);
