@@ -12,7 +12,7 @@ class Shift extends Model
 
     protected $table = 'shift';
     protected $primaryKey = 'kode_shift';
-    public $incrementing = false; // Karena primary key adalah string
+    public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [

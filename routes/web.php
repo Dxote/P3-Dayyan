@@ -7,9 +7,12 @@ use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SparepartController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\MasukController;
 use App\Http\Controllers\KeluarController;
-use App\Http\Controllers\Shift;
+use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\ServiceController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,6 +62,17 @@ Route::post('/barang_keluar', [KeluarController::class, 'store'])->name('barang_
 Route::get('/barang_keluar/{kode_keluar}/edit', [KeluarController::class, 'edit']); 
 Route::put('/barang_keluar/{kode_keluar}', [KeluarController::class, 'update'])->name('barang_keluar.update');
 Route::get('/barang_keluar/invoice', [KeluarController::class, 'invoice'])->name('barang_keluar.invoice');
+Route::put('/shift/{kode_shift}', [ShiftController::class, 'update'])->name('shift.update');
+Route::get('/shift/{kode_shift}/edit', [ShiftController::class, 'edit']);
+Route::get('/shift/{kode_shift}/get', [ShiftController::class, 'getShift']);
+Route::get('/shift/invoice', [ShiftController::class, 'invoice'])->name('shift.invoice');
+Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+Route::get('/absensi/{kode_absen}/edit', [AbsensiController::class, 'edit']);
+Route::put('/absensi/{kode_absen}', [AbsensiController::class, 'update'])->name('absensi.update');
+Route::delete('/absensi/{kode_absen}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
+Route::put('/service/{id}', [ServiceController::class, 'update'])->name('service.update');
+Route::get('/service/{id}/edit', [ServiceController::class, 'edit']);
+Route::delete('/service/{id}', [ServiceController::class, 'destroy'])->name('service.destroy');
 
 
 // Route::get('/shift', [ShiftController::class, 'index'])->name('shift.index');
@@ -83,8 +97,11 @@ Route::middleware('auth')->group(function() {
     Route::resource('setting', SettingController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('sparepart', SparepartController::class);
+    Route::resource('shift', ShiftController::class);
     Route::resource('barang_masuk', MasukController::class);
     Route::resource('barang_keluar', KeluarController::class);
+    Route::resource('absensi', AbsensiController::class);
+    Route::resource('service', ServiceController::class);
     // Route::resource('shift', ShiftController::class);
     Route::post('/basic/store' ,[BasicController::class, 'store'])->name('basic.store');
 });

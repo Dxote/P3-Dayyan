@@ -64,9 +64,16 @@
         <hr class="sidebar-divider">
 
         <!-- Heading -->
+
         @if(auth()->user()->level == 'admin' || auth()->user()->level == 'petugas')
         <div class="sidebar-heading">
-            {{ __('Feature') }}
+            {{ __('User') }}
+        </div>
+        @endif
+
+        @if(auth()->user()->level == 'admin' || auth()->user()->level == 'petugas')
+        <div class="sidebar-heading">
+            {{ __('Worker') }}
         </div>
 
         <li class="nav-item {{ Nav::isRoute('satuan.index') }}">
@@ -110,13 +117,36 @@
                 <span>{{ __('Data Barang Keluar') }}</span>
             </a>
         </li>
+        
+        <li class="nav-item {{ Nav::isRoute('service.index') }}">
+            <a class="nav-link" href="{{ route('service.index') }}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{{ __('Data Service') }}</span>
+            </a>
+        </li>
 
+        <li class="nav-item {{ Nav::isRoute('shift.index') }}">
+            <a class="nav-link" href="{{ route('shift.index') }}">
+                <i class="fas fa-align-left"></i>
+                <span>{{ __('Jadwal Shift') }}</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
+            <a class="nav-link" href="{{ route('absensi.index') }}">
+                <i class="fas fa-align-left"></i>
+                <span>{{ __('Absensi') }}</span>
+            </a>
+        </li>
 @endif
         
 
         @if(auth()->user()->level == 'admin')
 
         <!-- Nav Item -->
+        <div class="sidebar-heading">
+            {{ __('Admin') }}
+        </div>
         <li class="nav-item {{ Nav::isRoute('basic.index') }}">
             <a class="nav-link" href="{{ route('basic.index') }}">
                 <i class="fas fa-fw fa-user"></i>

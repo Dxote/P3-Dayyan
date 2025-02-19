@@ -60,14 +60,13 @@
             </div>
             <div class="card-body">
             <form id="brand-form" method="POST" action="{{ route('brand.store') }}">
-    @csrf
-    <input type="hidden" id="form-method" name="_method" value="POST">
-    
-    <div class="form-group">
-        <label for="kode_brand">Kode Brand</label>
-        <input type="text" class="form-control" id="kode_brand" name="kode_brand"
-                            value="{{ autonumber('brand', 'kode_brand', 3, 'BRD') }}" readonly>
-    </div>
+            @csrf
+            <input type="hidden" id="form-method" name="_method" value="POST">
+            <div class="form-group">
+                <label for="kode_brand">Kode Brand</label>
+                <input type="text" class="form-control" id="kode_brand" name="kode_brand"
+                value="{{ autonumber('brand', 'kode_brand', 3, 'BRD') }}" readonly>
+            </div>
 
     <div class="form-group">
         <label for="brand">Nama Brand</label>
