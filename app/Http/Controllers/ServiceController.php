@@ -38,22 +38,23 @@ public function store(GeneralRequest $request)
         'deskripsi_masalah' => $request->deskripsi_masalah,
         'user_id' => $request->kode_user, // Sesuaikan dengan nama field di database
         'petugas_id' => $request->kode_petugas,
+        'sparepart' => $request->spareparts ?? [], // Set default array kosong jika tidak ada
+        'alat' => $request->alat ?? [], // Set default array kosong jika tidak ada
+        
     ]);
 
-    // Pastikan ada spareparts sebelum attach
+    // Attach spareparts jika ada
     if ($request->has('spareparts') && is_array($request->spareparts)) {
         $service->spareparts()->attach($request->spareparts);
     }
 
-    // Pastikan ada alat sebelum attach
+    // Attach alat jika ada
     if ($request->has('alat') && is_array($request->alat)) {
         $service->alat()->attach($request->alat);
     }
 
     return response()->json(['message' => 'Data berhasil ditambahkan!', 'data' => $service]);
 }
-
-
 
 public function edit($id)
 {
@@ -62,7 +63,7 @@ public function edit($id)
 }
 
 
-    public function update(GeneralRequest $request, $id)
+public function update(GeneralRequest $request, $id)
 {
     $service = Service::findOrFail($id);
     $service->update([
@@ -70,16 +71,17 @@ public function edit($id)
         'nama_motor' => $request->nama_motor,
         'kode_brand' => $request->kode_brand,
         'deskripsi_masalah' => $request->deskripsi_masalah,
-        'kode_user' => $request->kode_user,
-        'kode_petugas' => $request->kode_petugas,
+        'user_id' => $request->kode_user,
+        'petugas_id' => $request->kode_petugas,
+        'sparepart' => $request->spareparts ?? [],
     ]);
 
-    // **Pastikan spareparts & alat tidak null sebelum sync()**
     $service->spareparts()->sync($request->spareparts ?? []);
     $service->alat()->sync($request->alat ?? []);
 
     return response()->json(['message' => 'Data berhasil diperbarui!', 'data' => $service]);
 }
+
 
 
 public function destroy($id)
