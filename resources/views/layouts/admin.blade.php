@@ -65,95 +65,98 @@
 
         <!-- Heading -->
 
-        @if(auth()->user()->level == 'admin' || auth()->user()->level == 'petugas')
-        <div class="sidebar-heading">
-            {{ __('User') }}
-        </div>
-        @endif
+        @if(auth()->user()->level == 'pengguna')
+    <div class="sidebar-heading">
+        {{ __('User') }}
+    </div>
 
-        @if(auth()->user()->level == 'admin' || auth()->user()->level == 'petugas')
-        <div class="sidebar-heading">
-            {{ __('Worker') }}
-        </div>
-
-        <li class="nav-item {{ Nav::isRoute('satuan.index') }}">
-            <a class="nav-link" href="{{ route('satuan.index') }}">
-                <i class="fas fa-align-left"></i>
-                <span>{{ __('Satuan') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('brand.index') }}">
-            <a class="nav-link" href="{{ route('brand.index') }}">
-                <i class="fas fa-book"></i>
-                <span>{{ __('Brand') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('alat.index') }}">
-            <a class="nav-link" href="{{ route('alat.index') }}">
-                <i class="fas fa-child"></i>
-                <span>{{ __('Data Alat') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('sparepart.index') }}">
-            <a class="nav-link" href="{{ route('sparepart.index') }}">
-                <i class="fas fa-tags"></i>
-                <span>{{ __('Data Sparepart') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('barang_masuk.index') }}">
-            <a class="nav-link" href="{{ route('barang_masuk.index') }}">
-                <i class="fas fa-archive"></i>
-                <span>{{ __('Data Barang Masuk') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('barang_keluar.index') }}">
-            <a class="nav-link" href="{{ route('barang_keluar.index') }}">
-                <i class="fas fa-calendar-alt"></i>
-                <span>{{ __('Data Barang Keluar') }}</span>
-            </a>
-        </li>
-        
-        <li class="nav-item {{ Nav::isRoute('service.index') }}">
-            <a class="nav-link" href="{{ route('service.index') }}">
-                <i class="fas fa-calendar-alt"></i>
-                <span>{{ __('Data Service') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('shift.index') }}">
-            <a class="nav-link" href="{{ route('shift.index') }}">
-                <i class="fas fa-align-left"></i>
-                <span>{{ __('Jadwal Shift') }}</span>
-            </a>
-        </li>
-
-        <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
-            <a class="nav-link" href="{{ route('absensi.index') }}">
-                <i class="fas fa-align-left"></i>
-                <span>{{ __('Absensi') }}</span>
-            </a>
-        </li>
+    <li class="nav-item {{ Nav::isRoute('service.riwayat') }}">
+        <a class="nav-link" href="{{ route('service.riwayat') }}">
+            <i class="fas fa-history"></i> {{-- Tetap, karena sudah sesuai --}}
+            <span>{{ __('Riwayat Service') }}</span>
+        </a>
+    </li>
 @endif
-        
 
-        @if(auth()->user()->level == 'admin')
+@if(auth()->user()->level == 'admin' || auth()->user()->level == 'petugas')
+    <div class="sidebar-heading">
+        {{ __('Worker') }}
+    </div>
 
-        <!-- Nav Item -->
-        <div class="sidebar-heading">
-            {{ __('Admin') }}
-        </div>
-        <li class="nav-item {{ Nav::isRoute('basic.index') }}">
-            <a class="nav-link" href="{{ route('basic.index') }}">
-                <i class="fas fa-fw fa-user"></i>
-                <span>{{ __('Data User') }}</span>
-            </a>
-        </li>
+    <li class="nav-item {{ Nav::isRoute('satuan.index') }}">
+        <a class="nav-link" href="{{ route('satuan.index') }}">
+            <i class="fas fa-balance-scale"></i> {{-- Satuan (Timbangan) --}}
+            <span>{{ __('Satuan') }}</span>
+        </a>
+    </li>
 
+    <li class="nav-item {{ Nav::isRoute('brand.index') }}">
+        <a class="nav-link" href="{{ route('brand.index') }}">
+            <i class="fas fa-tags"></i> {{-- Brand (Label/Tag) --}}
+            <span>{{ __('Brand') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('alat.index') }}">
+        <a class="nav-link" href="{{ route('alat.index') }}">
+            <i class="fas fa-tools"></i> {{-- Data Alat (Peralatan) --}}
+            <span>{{ __('Data Alat') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('sparepart.index') }}">
+        <a class="nav-link" href="{{ route('sparepart.index') }}">
+            <i class="fas fa-cogs"></i> {{-- Sparepart (Gigi Mesin) --}}
+            <span>{{ __('Data Sparepart') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('barang_masuk.index') }}">
+        <a class="nav-link" href="{{ route('barang_masuk.index') }}">
+            <i class="fas fa-truck-loading"></i> {{-- Barang Masuk (Truk Pengiriman) --}}
+            <span>{{ __('Data Barang Masuk') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('barang_keluar.index') }}">
+        <a class="nav-link" href="{{ route('barang_keluar.index') }}">
+            <i class="fas fa-dolly"></i> {{-- Barang Keluar (Troli Barang) --}}
+            <span>{{ __('Data Barang Keluar') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('service.index') }}">
+        <a class="nav-link" href="{{ route('service.index') }}">
+            <i class="fas fa-wrench"></i> {{-- Service (Perbaikan) --}}
+            <span>{{ __('Data Service') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('shift.index') }}">
+        <a class="nav-link" href="{{ route('shift.index') }}">
+            <i class="fas fa-calendar-alt"></i> {{-- Jadwal Shift (Kalender) --}}
+            <span>{{ __('Jadwal Shift') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
+        <a class="nav-link" href="{{ route('absensi.index') }}">
+            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
+            <span>{{ __('Absensi') }}</span>
+        </a>
+    </li>
+@endif
+
+@if(auth()->user()->level == 'admin')
+    <div class="sidebar-heading">
+        {{ __('Admin') }}
+    </div>
+    <li class="nav-item {{ Nav::isRoute('basic.index') }}">
+        <a class="nav-link" href="{{ route('basic.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Data User') }}</span>
+        </a>
+    </li>
         @endif
 
 

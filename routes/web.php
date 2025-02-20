@@ -71,9 +71,10 @@ Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index
 Route::get('/absensi/{kode_absen}/edit', [AbsensiController::class, 'edit']);
 Route::put('/absensi/{kode_absen}', [AbsensiController::class, 'update'])->name('absensi.update');
 Route::delete('/absensi/{kode_absen}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
-Route::put('/service/{id}', [ServiceController::class, 'update'])->name('service.update');
-Route::get('/service/{id}/edit', [ServiceController::class, 'edit']);
-Route::delete('/service/{id}', [ServiceController::class, 'destroy'])->name('service.destroy');
+Route::get('/service/{kode_service}/edit', [ServiceController::class, 'edit']);
+Route::put('/service/{kode_service}', [ServiceController::class, 'update'])->name('service.update');
+Route::get('/service/invoice', [ServiceController::class, 'invoice'])->name('service.invoice');Route::put('/service/{kode_service}', [ServiceController::class, 'update']);
+Route::get('/riwayat-service', [ServiceController::class, 'riwayat'])->name('service.riwayat');
 
 
 // Route::get('/shift', [ShiftController::class, 'index'])->name('shift.index');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class Service extends Model
 {
@@ -11,8 +12,8 @@ class Service extends Model
 
     protected $table = 'service';
     protected $primaryKey = 'kode_service';
-    public $incrementing = false;
     protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $fillable = [
         'kode_service',
@@ -20,16 +21,21 @@ class Service extends Model
         'nama_motor',
         'kode_brand',
         'deskripsi_masalah',
-        'sparepart',
-        'alat',
         'user_id',
-        'petugas_id'
+        'petugas_id',
     ];
 
-    protected $casts = [
-        'sparepart' => 'array',
-        'alat' => 'array',
-    ];
+    // Relasi ke User (Pengguna)
+    public function pengguna()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id')->where('level', 'pengguna');
+    }
+
+    // Relasi ke User (Petugas)
+    public function petugas()
+    {
+        return $this->belongsTo(User::class, 'petugas_id', 'id')->where('level', 'petugas');
+    }
 
     // Relasi ke Brand
     public function brand()
@@ -37,21 +43,15 @@ class Service extends Model
         return $this->belongsTo(Brand::class, 'kode_brand', 'kode_brand');
     }
 
-    public function spareparts()
+    // Relasi ke Sparepart melalui pivot service_sparepart
+    public function serviceSpareparts()
     {
-        return $this->belongsToMany(Sparepart::class, 'service_sparepart', 'service_id', 'kode_sparepart');
+        return $this->hasMany(ServiceSparepart::class, 'kode_service', 'kode_service');
     }
 
-
-    // Relasi ke Pengguna
-    public function user()
+    // Relasi ke Alat melalui pivot service_alat
+    public function serviceAlat()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
-    // Relasi ke Petugas
-    public function petugas()
-    {
-        return $this->belongsTo(User::class, 'petugas_id', 'id');
+        return $this->hasMany(ServiceAlat::class, 'kode_service', 'kode_service');
     }
 }
