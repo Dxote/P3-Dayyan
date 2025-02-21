@@ -55,7 +55,7 @@
                 <h6 id="form-title" class="m-0">Tambah Data</h6>
             </div>
             <div class="card-body">
-                <form id="barang-masuk-form">
+                <form id="barang-masuk-form" action="{{ route('barang_masuk.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="form-method" name="_method" value="POST">
                     <div class="form-group">

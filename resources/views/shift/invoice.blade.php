@@ -1,16 +1,12 @@
 <?php
     use Illuminate\Support\Facades\DB;
-// Lakukan query ke database untuk mengambil data setting
     $setting = DB::table('setting')->first();
 ?>
 
 @extends('layouts.admin')
 
 @section('main-content')
-    <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ $title ?? __('Laporan Data Spare-part') }}</h1>
-
-    <!-- Main Content goes here -->
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Laporan Data Shift') }}</h1>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -34,59 +30,28 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Sparepart</th>
-                <th>Nama Sparepart</th>
-                <th>Stok</th>
-                <th>Harga</th>
-                <th>Satuan</th>
-                <th>Brand</th>
-
+                <th>Kode Shift</th>
+                <th>Nama Karyawan</th>
+                <th>Tanggal Shift</th>
+                <th>Jam Mulai</th>
+                <th>Jam Selesai</th>
             </tr>
         </thead>
         <tbody>
-        @foreach ($sparepart as $sparepartItem)
+        @foreach ($shifts as $shift)
             <tr>
-            <td>{{ $loop->iteration }}</td>
-                <td>{{ $sparepartItem->kode_sparepart }}</td>
-                <td>{{ $sparepartItem->nama_sparepart }}</td>
-                <td>{{ $sparepartItem->stok }}</td>
-                <td>{{ number_format($sparepartItem->harga, 0, ',', '.') }}</td>
-                <td>{{ $sparepartItem->jumlah_satuan }} {{ $sparepartItem->satuan->nama_satuan }}</td>
-                <td>{{ $sparepartItem->brand->brand }}</td>
-    </tr>
-@endforeach
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $shift->kode_shift }}</td>
+                <td>{{ $shift->user->name }}</td>
+                <td>{{ $shift->tanggal_shift }}</td>
+                <td>{{ $shift->jam_mulai }}</td>
+                <td>{{ $shift->jam_selesai }}</td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
-
 
     <div class="text-right mt-4">
         <button class="btn btn-primary" onclick="window.print()">Print</button>
     </div>
-    <!-- End of Main Content -->
 @endsection
-
-@push('notif')
-    @if (session('success'))
-        <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session('warning'))
-        <div class="alert alert-warning border-left-warning alert-dismissible fade show" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session('status'))
-        <div class="alert alert-success border-left-success" role="alert">
-            {{ session('status') }}
-        </div>
-    @endif
-@endpush

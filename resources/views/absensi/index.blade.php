@@ -13,6 +13,9 @@
         <div class="card shadow mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Absensi</h6>
+                <div>
+                <a href="{{ route('absensi.invoice') }}" class="btn btn-sm btn-info">Invoice</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -24,6 +27,7 @@
                                 <th>Nama Karyawan</th>
                                 <th>Shift</th>
                                 <th>Tanggal</th>
+                                <th>Jam Absen</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -44,7 +48,14 @@
                                         @endif
                                     </td>
                                     <td>{{ $absen->tanggal_absen->format('d/m/Y') }}</td>
-                                    <td>{{ ucfirst($absen->status) }}</td>
+                                    <td>{{ $absen->jam_absen }}</td>
+                                    <td>
+                                        @if ($absen->status === 'hadir')
+                                            Hadir
+                                        @else
+                                            {{ $absen->status }} - {{ $absen->keterangan }}
+                                        @endif
+                                    </td>
                                     <td>
                                         <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $absen->kode_absen }}">Edit</button>
                                         <form action="{{ route('absensi.destroy', $absen->kode_absen) }}" method="POST" class="d-inline">
@@ -119,6 +130,11 @@
                         </select>
                     </div>
 
+                    <div class="form-group">
+                        <label for="keterangan">Keterangan</label>
+                        <input type="date" class="form-control" id="keterangan" name="keterangan" required>
+                    </div>
+
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
@@ -163,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     document.getElementById('tanggal_absen').value = absen.tanggal_absen;
                     document.getElementById('status').value = absen.status;
+                    document.getElementById('keterangan').value = absen.keterangan;
                     document.getElementById('form-title').textContent = "Edit Absensi";
                 })
                 .catch(error => {

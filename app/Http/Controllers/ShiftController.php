@@ -77,4 +77,12 @@ class ShiftController extends Controller
         Shift::findOrFail($kode_shift)->delete();
         return redirect()->route('shift.index')->with('message', 'Shift berhasil dihapus!');
     }
+
+    public function invoice()
+    {
+        $shifts = Shift::with('user')->get();
+        $users = User::all();
+
+        return view('shift.invoice', compact('shifts', 'users'));
+    }
 }

@@ -71,6 +71,9 @@ Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index
 Route::get('/absensi/{kode_absen}/edit', [AbsensiController::class, 'edit']);
 Route::put('/absensi/{kode_absen}', [AbsensiController::class, 'update'])->name('absensi.update');
 Route::delete('/absensi/{kode_absen}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
+Route::get('/absensi/petugas', [AbsensiController::class, 'petugasIndex'])->name('absensi.petugas');
+Route::post('/absensi/hadir', [AbsensiController::class, 'absenHadir'])->name('absensi.hadir');
+Route::get('/absensi/invoice', [AbsensiController::class, 'invoice'])->name('absensi.invoice');
 Route::get('/service/{kode_service}/edit', [ServiceController::class, 'edit']);
 Route::put('/service/{kode_service}', [ServiceController::class, 'update'])->name('service.update');
 Route::get('/service/invoice', [ServiceController::class, 'invoice'])->name('service.invoice');Route::put('/service/{kode_service}', [ServiceController::class, 'update']);

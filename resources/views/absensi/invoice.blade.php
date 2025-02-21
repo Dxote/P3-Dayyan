@@ -1,16 +1,15 @@
-<?php
-    use Illuminate\Support\Facades\DB;
-// Lakukan query ke database untuk mengambil data setting
-    $setting = DB::table('setting')->first();
-?>
 
 @extends('layouts.admin')
 
 @section('main-content')
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ $title ?? __('Laporan Data Spare-part') }}</h1>
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Laporan Data Absensi') }}</h1>
 
-    <!-- Main Content goes here -->
+    <!-- Informasi Perusahaan -->
+    @php
+        use Illuminate\Support\Facades\DB;
+        $setting = DB::table('setting')->first();
+    @endphp
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -30,63 +29,50 @@
         </div>
     @endif
 
-    <table class="table table-bordered table-stripped">
+    <!-- Tabel Absensi -->
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Sparepart</th>
-                <th>Nama Sparepart</th>
-                <th>Stok</th>
-                <th>Harga</th>
-                <th>Satuan</th>
-                <th>Brand</th>
-
+                <th>Kode Absen</th>
+                <th>Nama Karyawan</th>
+                <th>Shift</th>
+                <th>Tanggal</th>
+                <th>Jam Absen</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-        @foreach ($sparepart as $sparepartItem)
-            <tr>
-            <td>{{ $loop->iteration }}</td>
-                <td>{{ $sparepartItem->kode_sparepart }}</td>
-                <td>{{ $sparepartItem->nama_sparepart }}</td>
-                <td>{{ $sparepartItem->stok }}</td>
-                <td>{{ number_format($sparepartItem->harga, 0, ',', '.') }}</td>
-                <td>{{ $sparepartItem->jumlah_satuan }} {{ $sparepartItem->satuan->nama_satuan }}</td>
-                <td>{{ $sparepartItem->brand->brand }}</td>
-    </tr>
-@endforeach
+            @foreach ($absensi as $absen)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $absen->kode_absen }}</td>
+                    <td>{{ $absen->user->name }}</td>
+                    <td>
+                        @if($absen->shift)
+                            {{ \Carbon\Carbon::parse($absen->shift->tanggal_shift)->format('d/m/Y') }} - 
+                            {{ \Carbon\Carbon::parse($absen->shift->jam_mulai)->format('H:i') }} - 
+                            {{ \Carbon\Carbon::parse($absen->shift->jam_selesai)->format('H:i') }}
+                        @else
+                            Tidak Ada Shift
+                        @endif
+                    </td>
+                    <td>{{ $absen->tanggal_absen->format('d/m/Y') }}</td>
+                    <td>{{ $absen->jam_absen }}</td>
+                    <td>
+                        @if ($absen->status === 'hadir')
+                            Hadir
+                        @else
+                            {{ ucfirst($absen->status) }} - {{ $absen->keterangan }}
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
-
+    <!-- Tombol Print -->
     <div class="text-right mt-4">
         <button class="btn btn-primary" onclick="window.print()">Print</button>
     </div>
-    <!-- End of Main Content -->
 @endsection
-
-@push('notif')
-    @if (session('success'))
-        <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session('warning'))
-        <div class="alert alert-warning border-left-warning alert-dismissible fade show" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session('status'))
-        <div class="alert alert-success border-left-success" role="alert">
-            {{ session('status') }}
-        </div>
-    @endif
-@endpush

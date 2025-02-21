@@ -83,6 +83,13 @@
         {{ __('Worker') }}
     </div>
 
+    <li class="nav-item {{ Nav::isRoute('absensi.petugas') }}">
+        <a class="nav-link" href="{{ route('absensi.petugas') }}">
+            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
+            <span>{{ __('Absensi') }}</span>
+        </a>
+    </li>
+
     <li class="nav-item {{ Nav::isRoute('satuan.index') }}">
         <a class="nav-link" href="{{ route('satuan.index') }}">
             <i class="fas fa-balance-scale"></i> {{-- Satuan (Timbangan) --}}
@@ -139,12 +146,6 @@
         </a>
     </li>
 
-    <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
-        <a class="nav-link" href="{{ route('absensi.index') }}">
-            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
-            <span>{{ __('Absensi') }}</span>
-        </a>
-    </li>
 @endif
 
 @if(auth()->user()->level == 'admin')
@@ -155,6 +156,20 @@
         <a class="nav-link" href="{{ route('basic.index') }}">
             <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
             <span>{{ __('Data User') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('shift.index') }}">
+        <a class="nav-link" href="{{ route('shift.index') }}">
+            <i class="fas fa-calendar-alt"></i> {{-- Jadwal Shift (Kalender) --}}
+            <span>{{ __('Jadwal Shift') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
+        <a class="nav-link" href="{{ route('absensi.index') }}">
+            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
+            <span>{{ __('Data Absensi') }}</span>
         </a>
     </li>
         @endif
