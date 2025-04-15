@@ -26,8 +26,10 @@ class ServiceController extends Controller
         return view('service.index', compact('service', 'alat', 'brand', 'sparepart', 'pengguna', 'petugas'));
     }
 
+    
     public function store(GeneralRequest $request)
     {
+        $requestData = request()->all();
         $service = Service::create([
             'kode_service' => $request->kode_service,
             'plat_nomor' => $request->plat_nomor,
@@ -45,6 +47,7 @@ class ServiceController extends Controller
                     'kode_service_sparepart' => $service->kode_service . '-SP' . ($index + 1),
                     'kode_service' => $service->kode_service,
                     'kode_sparepart' => $kode_sparepart,
+                    'jumlah' => $request->jumlah_sparepart[$index] ?? 1, // Default 1 jika tidak diisi
                 ]);
             }
         }
@@ -97,6 +100,7 @@ class ServiceController extends Controller
                     'kode_service_sparepart' => $kode_service . '-SP' . ($index + 1),
                     'kode_service' => $kode_service,
                     'kode_sparepart' => $kode_sparepart,
+                    'jumlah' => $request->jumlah_sparepart[$index] ?? 1,
                 ]);
             }
         }

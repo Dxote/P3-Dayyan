@@ -76,7 +76,7 @@
                 <h6 id="form-title" class="m-0">Tambah Data</h6>
             </div>
             <div class="card-body">
-                <form id="service-form" method="POST">
+                <form id="service-form" action="{{ url('service') }}" method="POST">
                     @csrf
                     <input type="hidden" id="form-method" name="_method" value="POST">
                     <div class="form-group">
@@ -132,18 +132,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Sparepart</label>
-                        <div class="checkbox-group">
-                            @foreach ($sparepart as $sp)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="sparepart_{{ $sp->kode_sparepart }}" name="sparepart[]" value="{{ $sp->kode_sparepart }}">
-                                    <label class="form-check-label" for="sparepart_{{ $sp->kode_sparepart }}">{{ $sp->nama_sparepart }}</label>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label>Alat</label>
                         <div class="checkbox-group">
                             @foreach ($alat as $al)
@@ -154,6 +142,23 @@
                             @endforeach
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="sparepart">Sparepart</label>
+                        <div class="d-flex">
+                            <select class="form-control" id="sparepart">
+                                <option value="">Pilih Sparepart</option>
+                                @foreach ($sparepart as $sp)
+                                    <option value="{{ $sp->kode_sparepart }}" data-nama="{{ $sp->nama_sparepart }}">{{ $sp->nama_sparepart }}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" id="tambah-sparepart" class="btn btn-success ml-2">Tambah</button>
+                        </div>
+                    </div>
+
+                    <!-- Daftar sparepart yang dipilih -->
+                    <div id="daftar-sparepart" class="mt-3"></div>
+
 
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Simpan</button>
@@ -167,111 +172,186 @@
 
 <script>
     $(document).ready(function () {
-        // Simpan & Update Data
+    let daftarSparepart = [];
+
+    // Fungsi Render Daftar Sparepart
+    function renderSparepart() {
+        $('#daftar-sparepart').html('');
+        daftarSparepart.forEach((sp, index) => {
+            $('#daftar-sparepart').append(`
+                <div class="d-flex align-items-center mb-2">
+                    <button class="btn btn-sm btn-danger mr-2 hapus-sparepart" data-index="${index}">×</button>
+                    <span class="mr-2">${sp.nama_sparepart}</span>
+                    <button class="btn btn-sm btn-secondary kurang-jumlah" data-index="${index}">−</button>
+                    <input type="text" class="form-control form-control-sm mx-2 jumlah-sparepart" data-index="${index}" value="${sp.jumlah}" style="width: 50px; text-align:center;">
+                    <button class="btn btn-sm btn-secondary tambah-jumlah" data-index="${index}">+</button>
+                </div>
+            `);
+        });
+    }
+    $('#tambah-sparepart').click(function () {
+        let kodeSparepart = $('#sparepart').val();
+        let namaSparepart = $('#sparepart option:selected').text();
+
+        if (kodeSparepart && !daftarSparepart.some(s => s.kode_sparepart === kodeSparepart)) {
+            daftarSparepart.push({ kode_sparepart: kodeSparepart, nama_sparepart: namaSparepart, jumlah: 1 });
+            renderSparepart();
+        }
+    });
+
+    // Checkbox Sparepart Handler
+    $('input[name="sparepart[]"]').change(function () {
+        let kodeSparepart = $(this).val();
+        let namaSparepart = $(this).data('nama');
+
+        if ($(this).is(':checked')) {
+            if (!daftarSparepart.some(sp => sp.kode_sparepart === kodeSparepart)) {
+                daftarSparepart.push({ kode_sparepart: kodeSparepart, nama_sparepart: namaSparepart, jumlah: 1 });
+            }
+        } else {
+            daftarSparepart = daftarSparepart.filter(sp => sp.kode_sparepart !== kodeSparepart);
+        }
+        renderSparepart();
+    });
+
+    // Tambah Jumlah Sparepart
+    $(document).on('click', '.tambah-jumlah', function () {
+        let index = $(this).data('index');
+        daftarSparepart[index].jumlah++;
+        renderSparepart();
+    });
+
+    // Kurangi Jumlah Sparepart
+    $(document).on('click', '.kurang-jumlah', function () {
+        let index = $(this).data('index');
+        if (daftarSparepart[index].jumlah > 1) {
+            daftarSparepart[index].jumlah--;
+        }
+        renderSparepart();
+    });
+
+    // Hapus Sparepart dari Daftar
+    $(document).on('click', '.hapus-sparepart', function () {
+        let index = $(this).data('index');
+        let kodeSparepart = daftarSparepart[index].kode_sparepart;
+        daftarSparepart.splice(index, 1);
+        $(`input[name="sparepart[]"][value="${kodeSparepart}"]`).prop('checked', false);
+        renderSparepart();
+    });
+
+    // Submit Form dengan AJAX
         $('#service-form').on('submit', function (e) {
-            e.preventDefault();
+        e.preventDefault();
 
-            let formData = new FormData(this);
-            let method = $('#form-method').val();
-            let actionUrl = (method === 'POST') ? `{{ url('service') }}` : $('#service-form').attr('action');
+        let formData = new FormData(this);
+        formData.append('sparepart', JSON.stringify(daftarSparepart));
 
-            $.ajax({
-                url: actionUrl,
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-        alert(response.message || "Data berhasil diproses!");
-        location.reload();
-    },
-                error: function (xhr) {
-                    alert('Terjadi kesalahan, silakan coba lagi.');
-                }
-            });
-        });
+        let method = $('#form-method').val();
+        let actionUrl = (method === 'POST') ? `{{ url('service') }}` : $('#service-form').attr('action');
 
-        // Edit Data
-        $(document).on('click', '.edit-btn', function () {
-            let id = $(this).data('id');
-
-            $.ajax({
-                url: `{{ url('service') }}/${id}/edit`,
-                type: 'GET',
-                success: function (data) {
-                    if (!data.service) {
-                        alert("Data tidak ditemukan.");
-                        return;
-                    }
-
-                    $('#form-title').text('Edit Data');
-                    $('#form-method').val('PUT');
-                    $('#service-form').attr('action', `{{ url('service') }}/${id}`);
-                    
-                    $('#kode_service').val(data.service.kode_service).prop('readonly', true);
-                    $('#plat_nomor').val(data.service.plat_nomor);
-                    $('#nama_motor').val(data.service.nama_motor);
-                    $('#kode_brand').val(data.service.kode_brand);
-                    $('#deskripsi_masalah').val(data.service.deskripsi_masalah);
-                    $('#petugas_id').val(data.service.petugas_id);
-                    $('#user_id').val(data.service.user_id);
-
-                    // Reset checkbox
-                    $('input[name="sparepart[]"]').prop('checked', false);
-                    $('input[name="alat[]"]').prop('checked', false);
-
-                    // Isi checkbox Sparepart
-                    if (data.selected_sparepart) {
-                        data.selected_sparepart.forEach(value => {
-                            $(`#sparepart_${value}`).prop('checked', true);
-                        });
-                    }
-
-                    // Isi checkbox Alat
-                    if (data.selected_alat) {
-                        data.selected_alat.forEach(value => {
-                            $(`#alat_${value}`).prop('checked', true);
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                    alert('Terjadi kesalahan, tidak dapat mengambil data.');
-                }
-            });
-        });
-
-        // Hapus Data (Event Delegation)
-        $(document).on('click', '.delete-btn', function () {
-            let id = $(this).data('id');
-
-            if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                $.ajax({
-                    url: `{{ url('service') }}/${id}`,
-                    type: 'DELETE',
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function (response) {
-                        alert(response.message);
-                        location.reload();
-                    },
-                    error: function () {
-                        alert('Terjadi kesalahan, gagal menghapus data.');
-                    }
-                });
+        $.ajax({
+            url: actionUrl,
+            type: method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                alert(response.message || "Data berhasil diproses!");
+                location.reload();
+            },
+            error: function (xhr) {
+                    console.log(xhr.responseText); 
+                alert('Terjadi kesalahan, silakan coba lagi.');
             }
         });
+    });
 
-        // Reset Form
-        $('#reset-btn').on('click', function () {
-            $('#form-title').text('Tambah Data');
-            $('#form-method').val('POST');
-            $('#service-form').attr('action', `{{ url('service') }}`);
-            $('#service-form')[0].reset();
-            $('input[name="sparepart[]"], input[name="alat[]"]').prop('checked', false);
-            $('#kode_service').val("{{ autonumber('service', 'kode_service', 3, 'SVC') }}").prop('readonly', true);
+    // Edit Data
+    $(document).on('click', '.edit-btn', function () {
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: `{{ url('service') }}/${id}/edit`,
+            type: 'GET',
+            success: function (data) {
+                if (!data.service) {
+                    alert("Data tidak ditemukan.");
+                    return;
+                }
+
+                $('#form-title').text('Edit Data');
+                $('#form-method').val('PUT');
+                $('#service-form').attr('action', `{{ url('service') }}/${id}`);
+                
+                $('#kode_service').val(data.service.kode_service).prop('readonly', true);
+                $('#plat_nomor').val(data.service.plat_nomor);
+                $('#nama_motor').val(data.service.nama_motor);
+                $('#kode_brand').val(data.service.kode_brand);
+                $('#deskripsi_masalah').val(data.service.deskripsi_masalah);
+                $('#petugas_id').val(data.service.petugas_id);
+                $('#user_id').val(data.service.user_id);
+
+                // Reset Sparepart & Alat
+                $('input[name="sparepart[]"], input[name="alat[]"]').prop('checked', false);
+                daftarSparepart = [];
+
+                // Isi Sparepart
+                if (data.selected_sparepart) {
+                    data.selected_sparepart.forEach(sp => {
+                        daftarSparepart.push({ kode_sparepart: sp.kode_sparepart, nama_sparepart: sp.nama_sparepart, jumlah: sp.jumlah });
+                        $(`input[name="sparepart[]"][value="${sp.kode_sparepart}"]`).prop('checked', true);
+                    });
+                }
+                renderSparepart();
+
+                // Isi Alat
+                if (data.selected_alat) {
+                    data.selected_alat.forEach(value => {
+                        $(`#alat_${value}`).prop('checked', true);
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+                alert('Terjadi kesalahan, tidak dapat mengambil data.');
+            }
         });
     });
+
+    // Hapus Data
+    $(document).on('click', '.delete-btn', function () {
+        let id = $(this).data('id');
+
+        if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+            $.ajax({
+                url: `{{ url('service') }}/${id}`,
+                type: 'DELETE',
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function () {
+                    alert('Terjadi kesalahan, gagal menghapus data.');
+                }
+            });
+        }
+    });
+
+    // Reset Form
+    $('#reset-btn').on('click', function () {
+        $('#form-title').text('Tambah Data');
+        $('#form-method').val('POST');
+        $('#service-form').attr('action', `{{ url('service') }}`);
+        $('#service-form')[0].reset();
+        $('input[name="sparepart[]"], input[name="alat[]"]').prop('checked', false);
+        $('#kode_service').val("{{ autonumber('service', 'kode_service', 3, 'SVC') }}").prop('readonly', true);
+        daftarSparepart = [];
+        renderSparepart();
+    });
+});
+
 </script>
 @endsection

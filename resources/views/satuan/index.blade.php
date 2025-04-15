@@ -89,10 +89,10 @@
 <!-- SCRIPT AJAX UNTUK EDIT DAN TAMBAH -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById('brand-form');
+    const form = document.getElementById('satuan-form');
     const formTitle = document.getElementById('form-title');
-    const kodeBrandInput = document.getElementById('kode_brand');
-    const namaBrandInput = document.getElementById('brand');
+    const kodeSatuanInput = document.getElementById('kode_satuan');
+    const namaSatuanInput = document.getElementById('satuan');
     const formMethod = document.getElementById('form-method');
     const resetBtn = document.getElementById('reset-btn');
     const addBtn = document.getElementById('add-btn');
@@ -100,16 +100,16 @@
     // **FUNGSI EDIT DATA**
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', function () {
-            let kode_brand = this.getAttribute('data-id');
+            let kode_satuan = this.getAttribute('data-id');
 
-            fetch(`/brand/${kode_brand}/edit`)
+            fetch(`/satuan/${kode_satuan}/edit`)
     .then(response => response.json())
     .then(data => {
-        form.action = `/brand/${kode_brand}`;
+        form.action = `/satuan/${kode_satuan}`;
         document.getElementById('form-method').value = "PUT";
-        kodeBrandInput.value = data.kode_brand;
-        namaBrandInput.value = data.brand;
-        formTitle.textContent = "Edit Brand";
+        kodeSatuanInput.value = data.kode_satuan;
+        namaSatuanInput.value = data.satuan;
+        formTitle.textContent = "Edit Data Satuan";
     })
     .catch(error => console.error('Error:', error));
 
@@ -118,11 +118,11 @@
 
     // **FUNGSI RESET KE MODE TAMBAH**
     function resetForm() {
-        form.action = "{{ route('brand.store') }}";
+        form.action = "{{ route('satuam.store') }}";
         formMethod.value = "POST";
-        kodeBrandInput.value = "{{ autonumber('brand', 'kode_brand', 3, 'BRD') }}";
-        namaBrandInput.value = "";
-        formTitle.textContent = "Tambah Brand";
+        kodeSatuanInput.value = "{{ autonumber('satuan', 'kode_satuan', 3, 'STN') }}";
+        namaSatuanInput.value = "";
+        formTitle.textContent = "Tambah Satuan";
 
         // Hapus input method PUT jika ada
         let putMethod = document.getElementById('put-method');

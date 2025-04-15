@@ -30,7 +30,8 @@ class AddUserRequest extends FormRequest
             'telepon' => 'required|min:10',
             'level' => 'required|string|in:admin,petugas,pengguna', 
             'password' => 'required|min:8',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192' // Validasi untuk foto
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+            'saldo' => 'nullable',
         ];
     }
 }

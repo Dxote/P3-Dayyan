@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sparepart', function (Blueprint $table) {
-            $table->string('kode_sparepart', 6)->primary();
-            $table->string('nama_sparepart', 255);
-            $table->string('stok', 255);
-            $table->string('harga', 255);
-            $table->string('jumlah_satuan', 255);
-            $table->string('kode_satuan')-> index();
-            $table->string('kode_brand')-> index();
+        Schema::create('member', function (Blueprint $table) {
+            $table->bigIncrements('id_member');
+            $table->string('id_user')->unique();
+            $table->date('aktif_mulai');
+            $table->date('aktif_sampai');
             $table->timestamps();
         });
+        
     }
 
     /**

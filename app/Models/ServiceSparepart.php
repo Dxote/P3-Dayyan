@@ -19,6 +19,7 @@ class ServiceSparepart extends Model
         'kode_service_sparepart',
         'kode_service',
         'kode_sparepart',
+        'jumlah',
     ];
 
     public function service()

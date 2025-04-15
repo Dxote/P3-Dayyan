@@ -20,14 +20,14 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'Fayy',
             'email' => 'yann@gmail.com',
             'email_verified_at' => now(),
-            'password' => '12345678', // password
+            'password' => '12345678',
         ]);
         Setting::create([
-            'nama_perusahaan' => 'PT Berdaya',
-            'alamat' => 'Nindya Biodistrict Hotel',
-            'email' => 'berdayaenterprise@gmail.com',
-            'website' => 'blckroot.com',
-            'kodepos' => '40124',
+            'nama_perusahaan' => 'Laundry Cihuy',
+            'alamat' => 'Antapani',
+            'email' => 'laundrycihuy@gmail.com',
+            'website' => 'laundrycihuy.com',
+            'kodepos' => '401201',
             'telepon' => '1234567890',
             'path_logo' => 'path/to/logo.png',
         ]);

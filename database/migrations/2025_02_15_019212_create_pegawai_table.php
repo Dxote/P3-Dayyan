@@ -1,28 +1,23 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('satuan', function (Blueprint $table) {
-            $table->string('kode_satuan', 6)->primary();
-            $table->string('nama_satuan', 255);
+        Schema::create('pegawai', function (Blueprint $table) {
+            $table->string('id_pegawai')->primary();
+            $table->string('id_user')->unique();
+            $table->string('id_outlet');
+            $table->string('jabatan');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('satuan');
+        Schema::dropIfExists('pegawai');
     }
 };

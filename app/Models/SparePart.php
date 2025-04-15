@@ -30,4 +30,9 @@ class SparePart extends Model
     {
         return $this->belongsTo(Brand::class, 'kode_brand', 'kode_brand');
     }
+    public function serviceSpareparts()
+    {
+        return $this->hasMany(ServiceSparepart::class, 'kode_sparepart', 'kode_sparepart');
+    }
+
 }

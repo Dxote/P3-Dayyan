@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alat', function (Blueprint $table) {
-            $table->string('kode_alat', 6)->primary();
-            $table->string('nama_alat', 255);
+        Schema::create('layanan', function (Blueprint $table) {
+            $table->bigIncrements('id_layanan');
+            $table->string('nama_layanan');
+            $table->string('jenis');
+            $table->integer('harga');
             $table->timestamps();
-        });
+        });        
     }
 
     /**
