@@ -28,7 +28,7 @@ class AddUserRequest extends FormRequest
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'telepon' => 'required|min:10',
-            'level' => 'required|string|in:admin,petugas,pengguna', 
+            'role' => 'required|string|in:admin,pegawai,supervisor,user', 
             'password' => 'required|min:8',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
             'saldo' => 'nullable',

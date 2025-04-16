@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->string('nama');
             $table->text('alamat');
             $table->string('no_telp');
-            $table->json('layanan_ids')->nullable();
+            $table->string('id_layanan');
             $table->timestamps();
         });
     }

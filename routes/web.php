@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\BasicController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\OutletController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\BrandController;
@@ -10,7 +15,6 @@ use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\MasukController;
 use App\Http\Controllers\KeluarController;
-use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ServiceController;
 
 /*
@@ -32,11 +36,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::put('/profile', 'ProfileController@update')->name('profile.update');
+Route::get('/basic/{id}/edit', [BasicController::class, 'edit'])->name('basic.edit');
+Route::put('/basic/{id}', [BasicController::class, 'update'])->name('basic.update');
 Route::put('/setting/{id_setting}', 'SettingController@update')->name('setting.update');
 Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
-Route::get('/basic', [BasicController::class, 'index'])->name('basic.index');
-Route::get('/basic/create', [BasicController::class, 'index'])->name('basic.create');
-Route::get('/basic/invoice', [BasicController::class, 'invoice'])->name('basic.invoice');
+Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
+// Route::get('/outlet', [OutletController::class, 'index'])->name('outlet.index');
 Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan.index');
 Route::get('/satuan/{kode_satuan}/edit', [SatuanController::class, 'getSatuan']);
 Route::get('satuan/{kode_satuan}/edit', [SatuanController::class, 'edit']);
@@ -67,13 +72,6 @@ Route::put('/shift/{kode_shift}', [ShiftController::class, 'update'])->name('shi
 Route::get('/shift/{kode_shift}/edit', [ShiftController::class, 'edit']);
 Route::get('/shift/{kode_shift}/get', [ShiftController::class, 'getShift']);
 Route::get('/shift/invoice', [ShiftController::class, 'invoice'])->name('shift.invoice');
-Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-Route::get('/absensi/{kode_absen}/edit', [AbsensiController::class, 'edit']);
-Route::put('/absensi/{kode_absen}', [AbsensiController::class, 'update'])->name('absensi.update');
-Route::delete('/absensi/{kode_absen}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
-Route::get('/absensi/petugas', [AbsensiController::class, 'petugasIndex'])->name('absensi.petugas');
-Route::post('/absensi/hadir', [AbsensiController::class, 'absenHadir'])->name('absensi.hadir');
-Route::get('/absensi/invoice', [AbsensiController::class, 'invoice'])->name('absensi.invoice');
 Route::get('/service/{kode_service}/edit', [ServiceController::class, 'edit']);
 Route::put('/service/{kode_service}', [ServiceController::class, 'update'])->name('service.update');
 Route::get('/service/invoice', [ServiceController::class, 'invoice'])->name('service.invoice');Route::put('/service/{kode_service}', [ServiceController::class, 'update']);
@@ -98,15 +96,17 @@ Route::get('/blank', function () {
 Route::middleware('auth')->group(function() {
     Route::resource('basic', BasicController::class);
     Route::resource('satuan', SatuanController::class);
-    Route::resource('alat', AlatController::class);
+    Route::resource('layanan', LayananController::class);
+    Route::resource('outlet', OutletController::class);
+    Route::resource('admin', AdminController::class);
+    Route::resource('supervisor', SupervisorController::class);
+    Route::resource('pegawai', PegawaiController::class);
     Route::resource('setting', SettingController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('sparepart', SparepartController::class);
     Route::resource('shift', ShiftController::class);
     Route::resource('barang_masuk', MasukController::class);
     Route::resource('barang_keluar', KeluarController::class);
-    Route::resource('absensi', AbsensiController::class);
     Route::resource('service', ServiceController::class);
     // Route::resource('shift', ShiftController::class);
-    Route::post('/basic/store' ,[BasicController::class, 'store'])->name('basic.store');
 });

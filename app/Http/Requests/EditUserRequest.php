@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class EditUserRequest extends FormRequest
 {
@@ -27,11 +28,24 @@ class EditUserRequest extends FormRequest
         return [
             'name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email',
+            'email' => [
+            'required',
+            'email',
+            Rule::unique('users', 'email')->ignore($this->id),
+        ], 
             'telepon' => 'required|min:10',
-            'level' => 'required|string|in:admin,petugas,pengguna', 
+            'role' => 'required|string|in:admin,pegawai,supervisor,user', 
             'password' => 'required|min:8',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192' // Validasi untuk foto
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+            'saldo' => 'nullable',
         ];
     }
+
+    public function prepareForValidation()
+            {
+                // Supaya $this->id bisa dipakai di rules
+                $this->merge([
+                    'id' => $this->route('basic')->id ?? $this->id,
+                ]);
+            }
 }

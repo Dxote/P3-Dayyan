@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class BasicController extends Controller
 {
@@ -46,34 +48,30 @@ class BasicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(AddUserRequest $request)
-{
-    // Handle file upload
-    if ($request->hasFile('foto')) {
-        $file = $request->file('foto');
-        $filenameWithExt = $file->getClientOriginalName();
-        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-        $fileNameToStore = $filename.'_'.time().'.'.$extension;
-        $path = $file->storeAs('public/fotos', $fileNameToStore);
-    } else {
-        $fileNameToStore = 'noimage.jpg';
+    {
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;
+            $path = $file->storeAs('public/fotos', $fileNameToStore);
+        } else {
+            $fileNameToStore = 'noimage.jpg';
+        }
+    
+        User::create([
+            'name' => $request->name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'telepon' => $request->telepon,
+            // 'role' => $request->role,
+            'password' => Hash::make($request->password),
+            'foto' => $fileNameToStore,
+        ]);
+    
+        return response()->json(['success' => true, 'message' => 'User berhasil ditambahkan']);
     }
     
-
-    // Simpan data ke database
-    User::create([
-        'name' => $request->name,
-        'last_name' => $request->last_name,
-        'email' => $request->email,
-        'telepon' => $request->telepon,
-        'level' => $request->level,
-        'password' => Hash::make($request->password),
-        'foto' => $fileNameToStore, // Gunakan nama file yang telah disimpan
-    ]);
-    
-
-    return redirect()->route('basic.index')->with('message', 'User added successfully!');
-}
 
 
     /**
@@ -87,19 +85,20 @@ class BasicController extends Controller
         //
     }
 
+    
+
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $basic)
-    {
-        return view('basic.edit', [
-            'title' => 'Edit User',
-            'user' => $basic
-        ]);
-    }
+    public function edit($id)
+{
+    $user = User::findOrFail($id);
+    return response()->json($user);
+}
+
 
     /**
      * Update the specified resource in storage.
@@ -108,30 +107,43 @@ class BasicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EditUserRequest $request, User $basic)
+
+     public function update(EditUserRequest $request)
 {
-    if($request->filled('password')) {
-        $basic->password = Hash::make($request->password);
+    Log::debug('Request Data:', $request->all()); // log data yang masuk
+
+        try {
+        $user = User::findOrFail($request->id); // ambil user berdasarkan ID manual
+
+        $user->name = $request->name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->telepon = $request->telepon;
+        $user->role = $request->role;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('foto')) {
+            if ($user->foto && Storage::exists('public/' . $user->foto)) {
+                Storage::delete('public/' . $user->foto);
+            }
+
+            $path = $request->file('foto')->store('public/fotos');
+            $user->foto = str_replace('public/', '', $path);
+        }
+
+        $user->save();
+
+        Log::info('User updated successfully', ['user_id' => $user->id]);
+
+        return response()->json(['success' => true, 'message' => 'User berhasil diperbarui']);
+    } catch (\Exception $e) {
+        Log::error('Error updating user', ['error' => $e->getMessage()]);
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
     }
-    $basic->name = $request->name;
-    $basic->last_name = $request->last_name;
-    $basic->email = $request->email;
-    $basic->telepon = $request->telepon;
-    $basic->level = $request->level;
-
-    // Update foto
-    if ($request->hasFile('foto')) {
-        $fotoPath = $request->file('foto')->store('public/fotos');
-        $basic->foto = str_replace('public/', '', $fotoPath);
-    }
-
-    $basic->save();
-
-    return redirect()->route('basic.index')->with('message', 'User updated successfully!');
 }
-
-
-
     /**
      * Remove the specified resource from storage.
      *

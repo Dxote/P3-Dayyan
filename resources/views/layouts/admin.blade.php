@@ -65,38 +65,18 @@
 
         <!-- Heading -->
 
-        @if(auth()->user()->role == 'user')
-    <div class="sidebar-heading">
-        {{ __('User') }}
-    </div>
-
-@endif
-
-@if(auth()->user()->role == 'admin' || auth()->user()->role == 'pegawai')
+        @if(auth()->user()->role == 'pegawai')
     <div class="sidebar-heading">
         {{ __('Worker') }}
     </div>
 
-    <!-- <li class="nav-item {{ Nav::isRoute('absensi.petugas') }}">
-        <a class="nav-link" href="{{ route('absensi.petugas') }}">
-            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
-            <span>{{ __('Absensi') }}</span>
-        </a>
-    </li> -->
-
-
-    <!-- <li class="nav-item {{ Nav::isRoute('barang_keluar.index') }}">
-        <a class="nav-link" href="{{ route('barang_keluar.index') }}">
-            <i class="fas fa-dolly"></i> {{-- Barang Keluar (Troli Barang) --}}
-            <span>{{ __('Data Barang Keluar') }}</span>
-        </a>
-    </li> -->
 @endif
 
-@if(auth()->user()->role == 'admin')
+@if(auth()->user()->role == 'admin' || auth()->user()->role == 'supervisor')
     <div class="sidebar-heading">
-        {{ __('Admin') }}
+        {{ __('Supervisor') }}
     </div>
+
     <li class="nav-item {{ Nav::isRoute('basic.index') }}">
         <a class="nav-link" href="{{ route('basic.index') }}">
             <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
@@ -104,19 +84,48 @@
         </a>
     </li>
 
-    <li class="nav-item {{ Nav::isRoute('shift.index') }}">
-        <a class="nav-link" href="{{ route('shift.index') }}">
-            <i class="fas fa-calendar-alt"></i> {{-- Jadwal Shift (Kalender) --}}
-            <span>{{ __('Jadwal Shift') }}</span>
+    <li class="nav-item {{ Nav::isRoute('layanan.index') }}">
+        <a class="nav-link" href="{{ route('layanan.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Layanan') }}</span>
         </a>
     </li>
 
-    <li class="nav-item {{ Nav::isRoute('absensi.index') }}">
-        <a class="nav-link" href="{{ route('absensi.index') }}">
-            <i class="fas fa-user-check"></i> {{-- Absensi (Check-in User) --}}
-            <span>{{ __('Data Absensi') }}</span>
+    <li class="nav-item {{ Nav::isRoute('outlet.index') }}">
+        <a class="nav-link" href="{{ route('outlet.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Outlet') }}</span>
         </a>
     </li>
+
+    <li class="nav-item {{ Nav::isRoute('supervisor.index') }}">
+        <a class="nav-link" href="{{ route('supervisor.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Supervisor') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('pegawai.index') }}">
+        <a class="nav-link" href="{{ route('pegawai.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Pegawai') }}</span>
+        </a>
+    </li>
+
+@endif
+
+@if(auth()->user()->role == 'admin')
+    <div class="sidebar-heading">
+        {{ __('Admin') }}
+    </div>
+
+    <li class="nav-item {{ Nav::isRoute('admin.index') }}">
+        <a class="nav-link" href="{{ route('admin.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Admin') }}</span>
+        </a>
+    </li>
+
         @endif
 
 

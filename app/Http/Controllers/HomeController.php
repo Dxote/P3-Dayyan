@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Models\Outlet; 
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -25,9 +26,11 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::count();
+        $outlets = Outlet::count();
 
         $widget = [
             'users' => $users,
+            'outlet' => $outlets,
             //...
         ];
 
