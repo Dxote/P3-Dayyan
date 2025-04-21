@@ -65,11 +65,24 @@
 
         <!-- Heading -->
 
-        @if(auth()->user()->role == 'pegawai')
+        @if(auth()->user()->role == 'pegawai'|| auth()->user()->role == 'supervisor'|| auth()->user()->role == 'admin')
     <div class="sidebar-heading">
         {{ __('Worker') }}
     </div>
 
+    <li class="nav-item {{ Nav::isRoute('pegawai.index') }}">
+        <a class="nav-link" href="{{ route('pegawai.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Pegawai') }}</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ Nav::isRoute('pos.index') }}">
+        <a class="nav-link" href="{{ route('pos.index') }}">
+            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
+            <span>{{ __('Management POS') }}</span>
+        </a>
+    </li>
 @endif
 
 @if(auth()->user()->role == 'admin' || auth()->user()->role == 'supervisor')
@@ -105,12 +118,6 @@
         </a>
     </li>
 
-    <li class="nav-item {{ Nav::isRoute('pegawai.index') }}">
-        <a class="nav-link" href="{{ route('pegawai.index') }}">
-            <i class="fas fa-users-cog"></i> {{-- Data User (Pengaturan User) --}}
-            <span>{{ __('Pegawai') }}</span>
-        </a>
-    </li>
 
 @endif
 

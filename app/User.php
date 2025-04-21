@@ -41,11 +41,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function siswa()
+    public function pegawai()
     {
-        return $this->hasMany(User::class, 'id');
+        return $this->hasOne(\App\Models\Pegawai::class, 'id_user');
     }
-
+    public function member()
+    {
+        return $this->hasOne(\App\Models\Member::class, 'id_user', 'id');
+    }
 
     public function getFullNameAttribute()
     {

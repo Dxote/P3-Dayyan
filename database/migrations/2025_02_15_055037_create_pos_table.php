@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('pos_management', function (Blueprint $table) {
             $table->bigIncrements('id_pos');
             $table->enum('tipe', ['member', 'outlet', 'general']);
-            $table->unsignedBigInteger('target_id');
+            $table->unsignedBigInteger('id_outlet');
             $table->integer('diskon');
-            $table->enum('satuan_diskon', ['persen', 'kilogram']);
+            $table->enum('satuan_diskon', ['persen', 'nominal']);
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir');
             $table->timestamps();

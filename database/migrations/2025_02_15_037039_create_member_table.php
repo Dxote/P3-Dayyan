@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('member', function (Blueprint $table) {
             $table->bigIncrements('id_member');
             $table->string('id_user')->unique();
-            $table->date('aktif_mulai');
-            $table->date('aktif_sampai');
+            $table->integer('saldo')->default(0);
             $table->timestamps();
         });
         

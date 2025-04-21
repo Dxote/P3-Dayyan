@@ -15,6 +15,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Outlet</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -24,6 +25,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $s->user->name ?? '-' }} {{ $s->user->last_name ?? '' }}</td>
                             <td>{{ $s->user->email ?? '-' }}</td>
+                            <td>{{ $s->outlet->nama ?? '-' }}</td>
                             <td>
                                 <!-- <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $s->id_supervisor }}">Edit</button> -->
                                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $s->id_supervisor }}">Hapus</button>
@@ -57,6 +59,16 @@
                         </select>
                     </div>
 
+                    <div class="form-group">
+                        <label for="id_outlet">Pilih Outlet</label>
+                        <select name="id_outlet" id="id_outlet" class="form-control" required>
+                        <option value="">Pilih Outlet</option>
+                        @foreach ($outlets as $outlet)
+                            <option value="{{ $outlet->id_outlet }}">{{ $outlet->nama }}</option>
+                        @endforeach
+                    </select>
+                    </div>
+
                     <button type="submit" class="btn btn-primary" id="submit-btn">Simpan</button>
                     <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
                 </form>
@@ -72,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitBtn = document.getElementById("submit-btn");
     const formTitle = document.getElementById("form-title");
     const idUserSelect = document.getElementById("id_user");
+    const idOutletSelect = document.getElementById("id_outlet");
 
     let currentMode = 'create';
 
@@ -83,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
         submitBtn.className = "btn btn-primary";
         formTitle.textContent = "Tambah Supervisor";
         idUserSelect.disabled = false;
+        idOutletSelect.disabled = false;
         currentMode = 'create';
     }
 
@@ -91,49 +105,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let actionUrl = form.getAttribute("action");
         let method = methodInput.value;
-        let headers = {
-            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
-            "Accept": "application/json"
-        };
 
+        const formData = new FormData(form);
         if (method === "DELETE") {
-            fetch(actionUrl, {
-                method: "POST",
-                headers: {
-                    ...headers,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ _method: "DELETE" })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Data berhasil dihapus!');
-                    location.reload();
-                }
-            });
-        } else {
-            const formData = new FormData(form);
-            fetch(actionUrl, {
-                method: "POST",
-                headers,
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Data berhasil disimpan!');
-                    location.reload();
-                } else {
-                    alert('Gagal menyimpan data.');
-                    console.log(data);
-                }
-            });
+            formData.append('_method', 'DELETE');
+        } else if (method === "PUT") {
+            formData.append('_method', 'PUT');
         }
+
+        fetch(actionUrl, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
+                "Accept": "application/json"
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Data berhasil ${method === 'DELETE' ? 'dihapus' : 'disimpan'}!`);
+                location.reload();
+            } else {
+                alert('Terjadi kesalahan saat menyimpan data.');
+                console.error(data);
+            }
+        })
+        .catch(err => {
+            alert('Terjadi kesalahan jaringan.');
+            console.error(err);
+        });
     });
 
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("delete-btn")) {
+            currentMode = 'delete';
             const id = e.target.getAttribute("data-id");
 
             fetch(`/supervisor/${id}/edit`)
@@ -142,16 +148,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 const supervisor = data.supervisor;
                 const user = data.user;
 
+                // Cek dan tambahkan user jika tidak ada
                 let userExist = [...idUserSelect.options].some(opt => opt.value == supervisor.id_user);
                 if (!userExist) {
                     const newOption = document.createElement("option");
                     newOption.value = supervisor.id_user;
-                    newOption.textContent = `${supervisor.user.name} (${supervisor.user.email})`;
+                    newOption.textContent = `${user?.name || 'User'} ${user?.last_name || ''}`;
                     newOption.selected = true;
                     idUserSelect.appendChild(newOption);
                 }
 
                 idUserSelect.value = supervisor.id_user;
+                idOutletSelect.value = supervisor.id_outlet;
 
                 form.setAttribute("action", `/supervisor/${id}`);
                 methodInput.value = "DELETE";
@@ -160,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 formTitle.textContent = "Hapus Supervisor";
 
                 idUserSelect.disabled = true;
-                currentMode = 'delete';
+                idOutletSelect.disabled = true;
             });
         }
     });
@@ -168,4 +176,5 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("reset-btn").addEventListener("click", resetForm);
 });
 </script>
+
 @endsection

@@ -12,12 +12,53 @@ use Illuminate\Support\Facades\Log;
 class PegawaiController extends Controller
 {
     public function index()
-    {
+{
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        // Admin general
         $pegawais = Pegawai::with(['user', 'outlet'])->get();
         $users = User::where('role', 'user')->get();
-        $outlets = Outlet::all();
-        return view('pegawai.index', compact('pegawais', 'users', 'outlets'));
+    } else {
+        // Ambil idout dari pegawai atau supervisor
+        $idOutlet = null;
+
+        $pegawai = Pegawai::where('id_user', $user->id)->first();
+        if ($pegawai) {
+            $idOutlet = $pegawai->id_outlet;
+        } else {
+            // Cek supervisor
+            $supervisor = \App\Models\Supervisor::where('id_user', $user->id)->first();
+            if ($supervisor) {
+                $idOutlet = $supervisor->id_outlet;
+            }
+        }
+        // Jika id outlet ditemukan, filter pegawai berdasarkan outlet
+        if ($idOutlet) {
+            $pegawais = Pegawai::with(['user', 'outlet'])
+                        ->where('id_outlet', $idOutlet)
+                        ->get();
+        } else {
+            $pegawais = collect(); // Kosongkan jika outlet tidak ketemu
+        }
+        // Ambil semua user dengan role 'user' YANG:
+        // - Belum jadi pegawai (tidak punya relasi di tabel pegawai)
+        // - Atau, sudah jadi pegawai tapi dari outlet yang sama
+        $users = User::where('role', 'user')
+            ->where(function ($query) use ($idOutlet) {
+                $query->whereDoesntHave('pegawai')
+                      ->orWhereHas('pegawai', function ($q) use ($idOutlet) {
+                          $q->where('id_outlet', $idOutlet);
+                      });
+            })->get();
     }
+
+    $outlets = Outlet::all();
+
+    return view('pegawai.index', compact('pegawais', 'users', 'outlets'));
+}
+
+
 
     public function store(Request $request)
     {

@@ -4,24 +4,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Outlet;
 use App\Models\Layanan;
+use App\Models\Setting;
 
 class OutletController extends Controller
 {
     public function index()
     {
-        $widget = [
-            'users' => \App\Models\User::count(),
-            'outlet' => Outlet::count(),
-        ];
-
+        $setting = Setting::first(); 
         $outlets = Outlet::all(); 
         $layanans = Layanan::all();
-        return view('outlet.index', compact('outlets', 'layanans'));
+        return view('outlet.index', compact('setting', 'outlets', 'layanans'));
     }
 
     public function store(Request $request)
     {
-        $layanan = implode(',', $request->id_layanan); // gabungkan jadi string
+        $layanan = implode(',', $request->id_layanan); 
 
         Outlet::create([
             'nama' => $request->nama,
@@ -35,7 +32,7 @@ class OutletController extends Controller
     public function edit($id)
     {
         $outlet = Outlet::findOrFail($id);
-        $outlet->layanan_array = explode(',', $outlet->id_layanan); // ubah jadi array
+        $outlet->layanan_array = explode(',', $outlet->id_layanan); 
     
         return response()->json(['outlet' => $outlet]);
     }
@@ -63,5 +60,13 @@ class OutletController extends Controller
         $outlet->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    public function show($id)
+    {
+        $outlet = Outlet::findOrFail($id);
+        $layanans = Layanan::whereIn('id_layanan', explode(',', $outlet->id_layanan))->get();
+
+        return view('outlet.show', compact('outlet', 'layanans'));
     }
 }

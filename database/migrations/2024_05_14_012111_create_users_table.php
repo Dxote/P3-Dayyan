@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('telepon',20)->nullable();
             $table->enum('role', ['admin', 'supervisor', 'pegawai', 'user'])->default('user');
             $table->string('foto', 250)->nullable();
-            $table->integer('saldo')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('supervisor', function (Blueprint $table) {
             $table->string('id_supervisor')->primary();
             $table->string('id_user')->unique();
+            $table->string('id_outlet');
             $table->timestamps();
         });
     }
